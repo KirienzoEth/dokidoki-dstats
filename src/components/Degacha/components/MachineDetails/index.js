@@ -139,7 +139,7 @@ export default function MachineDetails() {
         </MachineInfo>
         <MachineInfo style={{ gridArea: "price" }}>
           <h2>Price for one spin:</h2>
-          <p>{machineData.playOncePrice} AZUKI</p>
+          <p>{machineData.playOncePrice} {machineData.currencyToken}</p>
         </MachineInfo>
         <MachineInfo style={{ gridArea: "createdDate" }}>
           <h2>Operating since:</h2>
@@ -170,7 +170,7 @@ export default function MachineDetails() {
           </ResponsiveContainer>
         </Box>
         <Box style={{ gridArea: "amountSpent" }}>
-          <h2>Azuki spent:</h2>
+          <h2>{machineData.currencyToken} spent:</h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
@@ -193,32 +193,8 @@ export default function MachineDetails() {
             </AreaChart>
           </ResponsiveContainer>
         </Box>
-        <Box style={{ gridArea: "profitAmount" }}>
-          <h2>Profit (in Azuki):</h2>
-          <ResponsiveContainer width={"99%"} height={300}>
-            <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
-              <defs>
-                <linearGradient id="profitAmount" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#acfffb" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="#acfffb" stopOpacity={0.1} />
-                </linearGradient>
-                <linearGradient id="cumulativeProfit" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#de5b80" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="#de5b80" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="name" angle={30} textAnchor={'start'} interval="preserveStartEnd" />
-              <YAxis yAxisId="left" type="number" dataKey="profitAmount" name="per day" stroke="#acfffb" />
-              <YAxis yAxisId="right" type="number" dataKey="cumulativeProfit" name="cumulative" orientation="right" stroke="#de5b80" />
-              <CartesianGrid strokeDasharray="2 2" stroke="#4e4166" />
-              <Tooltip content={<CustomTooltip />} />
-              <Area yAxisId="right" type="monotone" dataKey="cumulativeProfit" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeProfit)" />
-              <Area yAxisId="left" type="monotone" dataKey="profitAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#profitAmount)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </Box>
         <Box style={{ gridArea: "burnAmount" }}>
-          <h2>Azuki burned:</h2>
+          <h2>{machineData.currencyToken} burned:</h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
@@ -238,6 +214,30 @@ export default function MachineDetails() {
               <Tooltip content={<CustomTooltip />} />
               <Area yAxisId="right" type="monotone" dataKey="cumulativeBurn" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeBurn)" />
               <Area yAxisId="left" type="monotone" dataKey="burnAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#burnAmount)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </Box>
+        <Box style={{ gridArea: "profitAmount" }}>
+          <h2>Profit (in {machineData.currencyToken}):</h2>
+          <ResponsiveContainer width={"99%"} height={300}>
+            <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
+              <defs>
+                <linearGradient id="profitAmount" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#acfffb" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#acfffb" stopOpacity={0.1} />
+                </linearGradient>
+                <linearGradient id="cumulativeProfit" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#de5b80" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#de5b80" stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" angle={30} textAnchor={'start'} interval="preserveStartEnd" />
+              <YAxis yAxisId="left" type="number" dataKey="profitAmount" name="per day" stroke="#acfffb" />
+              <YAxis yAxisId="right" type="number" dataKey="cumulativeProfit" name="cumulative" orientation="right" stroke="#de5b80" />
+              <CartesianGrid strokeDasharray="2 2" stroke="#4e4166" />
+              <Tooltip content={<CustomTooltip />} />
+              <Area yAxisId="right" type="monotone" dataKey="cumulativeProfit" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeProfit)" />
+              <Area yAxisId="left" type="monotone" dataKey="profitAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#profitAmount)" />
             </AreaChart>
           </ResponsiveContainer>
         </Box>
