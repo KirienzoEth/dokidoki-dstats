@@ -7,6 +7,7 @@ import Azuki from './components/Token/Azuki';
 import Doki from './components/Token/Doki';
 import Degacha from './components/Degacha';
 import MachineDetails from './components/Degacha/components/MachineDetails'
+import About from './components/About';
 
 const Main = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/token/doki" children={<Doki />} />
                 <Route path="/product/degacha/machine/:id" children={<MachineDetails />} />
                 <Route path="/product/degacha" children={<Degacha />} />
+                <Route path="/about" children={<About />} />
                 <Route path="/" children={<Azuki />} />
               </Switch>
             </div>

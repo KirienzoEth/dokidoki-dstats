@@ -24,6 +24,13 @@ const Category = styled.div`
   margin-bottom: 1.25rem;
 `
 
+const AboutSection = styled(Category)`
+  box-sizing: border-box;
+  img {
+    margin-right: 0.75rem;
+  }
+`
+
 const CategoryTitle = styled.h3`
   font-weight: 700;
 `
@@ -49,6 +56,9 @@ export default function Menu() {
   return (
     <MenuColumn>
       <Title>DSTATS 1.0</Title>
+      <AboutSection>
+        <StyledLink to="/about" selected={ pathname === "/about" }><img alt="DSTATS" src="/favicon.ico" width="20" height="20"/>About</StyledLink>
+      </AboutSection>
       <Category>
         <CategoryTitle>Tokens</CategoryTitle>
         <StyledLink to="/token/doki" selected={ pathname === "/token/doki" }><img alt="doki" src="/doki.png" width="20" height="20"/>Doki</StyledLink>

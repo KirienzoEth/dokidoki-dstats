@@ -2,7 +2,3 @@
   display: grid;
   grid-template-columns: 220px 1fr;
 }
-
-* {
-  box-sizing: border-box;
-}
