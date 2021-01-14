@@ -130,7 +130,7 @@ export default function MachineDetails() {
     <>
       <HeaderContainer>
         <div><img alt={machineData.currencyToken.toLowerCase()} src={`/${machineData.currencyToken.toLowerCase()}.png`} width="50" height="50" />{machineData.name}</div>
-        <div style={{ justifyContent: "right" }}><StyledLink to="/product/degacha">X</StyledLink></div>
+        <div style={{ justifyContent: "flex-end" }}><StyledLink to="/product/degacha">X</StyledLink></div>
       </HeaderContainer>
       <ContentContainer>
         <MachineInfo style={{ gridArea: "description" }}>
