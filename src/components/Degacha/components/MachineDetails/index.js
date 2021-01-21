@@ -118,7 +118,7 @@ export default function MachineDetails() {
         locked: machine.locked,
         currencyToken: machine.currencyToken.symbol,
         playOncePrice: machine.playOncePrice / (10 ** machine.currencyToken.decimals),
-        createdDate: moment.unix(machine.createdDate).format('YYYY-MM-DD LT [UTC]'),
+        createdDate: moment.unix(machine.createdDate).utc().format('YYYY-MM-DD LT [UTC]'),
         burnAmount: machine.burnAmount / (10 ** machine.currencyToken.decimals),
         buybackAmount: machine.buybackAmount / (10 ** machine.currencyToken.decimals),
         profitAmount: machine.profitAmount / (10 ** machine.currencyToken.decimals),
