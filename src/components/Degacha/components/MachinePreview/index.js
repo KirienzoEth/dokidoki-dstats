@@ -25,12 +25,14 @@ const MachineContent = styled.div`
 `
 
 export default function MachinePreview( {machineData} ) {
+  const price = machineData.locked ? 'Locked' : `${machineData.price} ${machineData.currency}`
+
   return (
     <Box>
-      <MachineHeader><span>{machineData.name}</span><img alt='azuki token' src={`/${ machineData.currency.toLowerCase() }.png`} width={24} height={24}/></MachineHeader>
+      <MachineHeader><span>{machineData.name}</span><img alt='machihne currency' src={`/${ machineData.currency.toLowerCase() }.png`} width={24} height={24}/></MachineHeader>
       <MachineContent>
         <img alt='degacha machine' src='/degacha.png' width='100%' />
-        <div>{machineData.price} {machineData.currency}</div>
+        <div>{price}</div>
       </MachineContent>
     </Box>
   )

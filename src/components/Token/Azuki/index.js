@@ -114,7 +114,7 @@ export default function Azuki() {
     <>
       <HeaderContainer>
         <TokenInfoContainer><img alt="azuki" src="/azuki.png" width="50" height="50" />Azuki</TokenInfoContainer>
-        <TokenInfoContainer>1 ETH = {toLocaleString(tokenData.price)}</TokenInfoContainer>
+        <TokenInfoContainer>1 ETH = {toLocaleString(tokenData.price)} AZUKI</TokenInfoContainer>
         <TokenInfoContainer>Current supply: {toLocaleString(tokenData.currentSupply)}</TokenInfoContainer>
         <TokenInfoContainer>Burned: {toLocaleString(tokenData.burnAmount)}</TokenInfoContainer>
         <TokenInfoContainer>Max: {toLocaleString(80000000)}</TokenInfoContainer>

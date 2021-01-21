@@ -34,7 +34,7 @@ const ContentContainer = styled.div`
   grid-template-areas: 'description price'
   'description createdDate'
   'playTimes amountSpent'
-  'burnAmount profitAmount';
+  'machineSpecificGraph profitAmount';
   grid-gap: 10px;
 `
 
@@ -56,11 +56,13 @@ export default function MachineDetails() {
         {
           machine(id: "${id}") {
             title
+            locked
             playOncePrice
             playTimes
             description
             createdDate
             burnAmount
+            buybackAmount
             profitAmount
             amountSpent
             currencyToken {
@@ -70,6 +72,7 @@ export default function MachineDetails() {
             machineDayData(first: 365, orderBy: date, orderDirection: desc) {
               date
               burnAmount
+              buybackAmount
               profitAmount
               amountSpent
               playTimes
@@ -81,12 +84,14 @@ export default function MachineDetails() {
     }).then(response => {
       const machine = response.data.data.machine
       let cumulativeBurn = machine.burnAmount
+      let cumulativeBuyback = machine.buybackAmount
       let cumulativeProfit = machine.profitAmount
       let cumulativeSpent = machine.amountSpent
       let cumulativePlayTimes = machine.playTimes
 
       const dayData = machine.machineDayData.map((machineDayData, index) => {
         cumulativeBurn -= machine.machineDayData[index - 1] ? machine.machineDayData[index - 1].burnAmount : 0
+        cumulativeBuyback -= machine.machineDayData[index - 1] ? machine.machineDayData[index - 1].buybackAmount : 0
         cumulativeProfit -= machine.machineDayData[index - 1] ? machine.machineDayData[index - 1].profitAmount : 0
         cumulativeSpent -= machine.machineDayData[index - 1] ? machine.machineDayData[index - 1].amountSpent : 0
         cumulativePlayTimes -= machine.machineDayData[index - 1] ? machine.machineDayData[index - 1].playTimes : 0
@@ -94,11 +99,13 @@ export default function MachineDetails() {
         return {
           name: moment.unix(machineDayData.date).format('YYYY-MM-DD'),
           burnAmount: machineDayData.burnAmount / (10 ** machine.currencyToken.decimals),
+          buybackAmount: machineDayData.buybackAmount / (10 ** machine.currencyToken.decimals),
           profitAmount: machineDayData.profitAmount / (10 ** machine.currencyToken.decimals),
           amountSpent: machineDayData.amountSpent / (10 ** machine.currencyToken.decimals),
           playTimes: machineDayData.playTimes,
 
           cumulativeBurn: cumulativeBurn / (10 ** machine.currencyToken.decimals),
+          cumulativeBuyback: cumulativeBuyback / (10 ** machine.currencyToken.decimals),
           cumulativeProfit: cumulativeProfit / (10 ** machine.currencyToken.decimals),
           cumulativeSpent: cumulativeSpent / (10 ** machine.currencyToken.decimals),
           cumulativePlayTimes: cumulativePlayTimes,
@@ -108,10 +115,12 @@ export default function MachineDetails() {
       setMachineData({
         name: machine.title,
         description: machine.description,
+        locked: machine.locked,
         currencyToken: machine.currencyToken.symbol,
         playOncePrice: machine.playOncePrice / (10 ** machine.currencyToken.decimals),
         createdDate: moment.unix(machine.createdDate).format('YYYY-MM-DD LT [UTC]'),
         burnAmount: machine.burnAmount / (10 ** machine.currencyToken.decimals),
+        buybackAmount: machine.buybackAmount / (10 ** machine.currencyToken.decimals),
         profitAmount: machine.profitAmount / (10 ** machine.currencyToken.decimals),
         amountSpent: machine.amountSpent / (10 ** machine.currencyToken.decimals),
         playTimes: machine.playTimes,
@@ -123,6 +132,66 @@ export default function MachineDetails() {
   if (machineData === undefined) {
     return (
       <p>Loading...</p>
+    )
+  }
+
+  const price = machineData.locked ? 'Locked' : `${machineData.playOncePrice} ${machineData.currencyToken}`
+  const machineSpecificGraph = machineData => {
+    if (machineData.currencyToken.toLowerCase() !== 'eth') {
+      // TODO Charts needs to be standalone components
+      return (
+        <Box style={{ gridArea: "machineSpecificGraph" }}>
+          <h2>{machineData.currencyToken} burned:</h2>
+          <ResponsiveContainer width={"99%"} height={300}>
+            <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
+              <defs>
+                <linearGradient id="burnAmount" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#acfffb" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#acfffb" stopOpacity={0.1} />
+                </linearGradient>
+                <linearGradient id="cumulativeBurn" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#de5b80" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#de5b80" stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" angle={30} textAnchor={'start'} interval="preserveStartEnd" />
+              <YAxis yAxisId="left" type="number" dataKey="burnAmount" name="per day" stroke="#acfffb" />
+              <YAxis yAxisId="right" type="number" dataKey="cumulativeBurn" name="cumulative" orientation="right" stroke="#de5b80" />
+              <CartesianGrid strokeDasharray="2 2" stroke="#4e4166" />
+              <Tooltip content={<CustomTooltip />} />
+              <Area yAxisId="right" type="monotone" dataKey="cumulativeBurn" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeBurn)" />
+              <Area yAxisId="left" type="monotone" dataKey="burnAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#burnAmount)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </Box>
+      )
+    }
+
+    return (
+      <Box style={{ gridArea: "machineSpecificGraph" }}>
+        <h2>{machineData.currencyToken} generated for DOKI buyback:</h2>
+        <ResponsiveContainer width={"99%"} height={300}>
+          <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
+            <defs>
+              <linearGradient id="buybackAmount" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#acfffb" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="#acfffb" stopOpacity={0.1} />
+              </linearGradient>
+              <linearGradient id="cumulativeBuyback" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#de5b80" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="#de5b80" stopOpacity={0.1} />
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="name" angle={30} textAnchor={'start'} interval="preserveStartEnd" />
+            <YAxis yAxisId="left" type="number" dataKey="buybackAmount" name="per day" stroke="#acfffb" />
+            <YAxis yAxisId="right" type="number" dataKey="cumulativeBuyback" name="cumulative" orientation="right" stroke="#de5b80" />
+            <CartesianGrid strokeDasharray="2 2" stroke="#4e4166" />
+            <Tooltip content={<CustomTooltip />} />
+            <Area yAxisId="right" type="monotone" dataKey="cumulativeBuyback" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeBuyback)" />
+            <Area yAxisId="left" type="monotone" dataKey="buybackAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#buybackAmount)" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Box>
     )
   }
 
@@ -139,7 +208,7 @@ export default function MachineDetails() {
         </MachineInfo>
         <MachineInfo style={{ gridArea: "price" }}>
           <h2>Price for one spin:</h2>
-          <p>{machineData.playOncePrice} {machineData.currencyToken}</p>
+          <p>{price}</p>
         </MachineInfo>
         <MachineInfo style={{ gridArea: "createdDate" }}>
           <h2>Operating since:</h2>
@@ -193,30 +262,7 @@ export default function MachineDetails() {
             </AreaChart>
           </ResponsiveContainer>
         </Box>
-        <Box style={{ gridArea: "burnAmount" }}>
-          <h2>{machineData.currencyToken} burned:</h2>
-          <ResponsiveContainer width={"99%"} height={300}>
-            <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
-              <defs>
-                <linearGradient id="burnAmount" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#acfffb" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="#acfffb" stopOpacity={0.1} />
-                </linearGradient>
-                <linearGradient id="cumulativeBurn" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#de5b80" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="#de5b80" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="name" angle={30} textAnchor={'start'} interval="preserveStartEnd" />
-              <YAxis yAxisId="left" type="number" dataKey="burnAmount" name="per day" stroke="#acfffb" />
-              <YAxis yAxisId="right" type="number" dataKey="cumulativeBurn" name="cumulative" orientation="right" stroke="#de5b80" />
-              <CartesianGrid strokeDasharray="2 2" stroke="#4e4166" />
-              <Tooltip content={<CustomTooltip />} />
-              <Area yAxisId="right" type="monotone" dataKey="cumulativeBurn" name="over time" stroke="#de5b80" fillOpacity={1} fill="url(#cumulativeBurn)" />
-              <Area yAxisId="left" type="monotone" dataKey="burnAmount" name="per day" stroke="#acfffb" fillOpacity={1} fill="url(#burnAmount)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </Box>
+        {machineSpecificGraph(machineData)}
         <Box style={{ gridArea: "profitAmount" }}>
           <h2>Profit (in {machineData.currencyToken}):</h2>
           <ResponsiveContainer width={"99%"} height={300}>

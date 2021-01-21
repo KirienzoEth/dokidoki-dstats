@@ -44,6 +44,7 @@ export default function Degacha() {
             id
             title
             playOncePrice
+            locked
             currencyToken {
               symbol
               decimals
