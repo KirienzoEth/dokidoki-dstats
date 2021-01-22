@@ -3,7 +3,7 @@ import Box from '../../Box'
 import { toLocaleString } from '../../../utils/Number'
 
 export default function Tooltip({ active, payload, label }) {
-  if (active) {
+  if (active && payload) {
     return (
       <Box>
         <div>{label}</div>

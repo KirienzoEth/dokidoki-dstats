@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { CartesianGrid, XAxis, YAxis, Tooltip, AreaChart, Area, ResponsiveContainer } from 'recharts'
 import CustomTooltip from '../../../Graph/Tooltip'
 import Box from '../../../Box'
+import { toLocaleString } from '../../../../utils/Number';
 
 const HeaderContainer = styled(Box)`
   font-size: 2em;
@@ -124,7 +125,7 @@ export default function MachineDetails() {
         profitAmount: machine.profitAmount / (10 ** machine.currencyToken.decimals),
         amountSpent: machine.amountSpent / (10 ** machine.currencyToken.decimals),
         playTimes: machine.playTimes,
-        dayData: dayData.reverse()
+        dayData: dayData.reverse(),
       })
     })
   }, [id])
@@ -141,7 +142,7 @@ export default function MachineDetails() {
       // TODO Charts needs to be standalone components
       return (
         <Box style={{ gridArea: "machineSpecificGraph" }}>
-          <h2>{machineData.currencyToken} burned:</h2>
+          <h2>Burned: {toLocaleString(machineData.burnAmount)} {machineData.currencyToken}</h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
@@ -169,7 +170,7 @@ export default function MachineDetails() {
 
     return (
       <Box style={{ gridArea: "machineSpecificGraph" }}>
-        <h2>{machineData.currencyToken} generated for DOKI buyback:</h2>
+        <h2>Generated for DOKI buyback: {toLocaleString(machineData.buybackAmount)} {machineData.currencyToken}</h2>
         <ResponsiveContainer width={"99%"} height={300}>
           <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
             <defs>
@@ -215,7 +216,7 @@ export default function MachineDetails() {
           <p>{machineData.createdDate}</p>
         </MachineInfo>
         <Box style={{ gridArea: "playTimes" }}>
-          <h2>Times played:</h2>
+          <h2>Times played: {machineData.playTimes}</h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
@@ -239,7 +240,7 @@ export default function MachineDetails() {
           </ResponsiveContainer>
         </Box>
         <Box style={{ gridArea: "amountSpent" }}>
-          <h2>{machineData.currencyToken} spent:</h2>
+          <h2>Spent: {toLocaleString(machineData.amountSpent)} {machineData.currencyToken} </h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
@@ -264,7 +265,7 @@ export default function MachineDetails() {
         </Box>
         {machineSpecificGraph(machineData)}
         <Box style={{ gridArea: "profitAmount" }}>
-          <h2>Profit (in {machineData.currencyToken}):</h2>
+          <h2>Profit: {toLocaleString(machineData.profitAmount)} {machineData.currencyToken}</h2>
           <ResponsiveContainer width={"99%"} height={300}>
             <AreaChart fontSize={20} margin={{ left: 50, bottom: 50, top: 50, right: 100 }} data={machineData.dayData} syncId="machineData">
               <defs>
