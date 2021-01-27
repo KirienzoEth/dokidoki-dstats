@@ -80,13 +80,12 @@ export default function Degacha() {
       </HeaderContainer>
       <MachinesListContainer>
         {
-          machinesList.map(machine => {
-            return (
+          machinesList.map(machine => (
               <StyledLink key={machine.id} to={`/product/degacha/machine/${machine.id}`}>
                 <MachinePreview machineData={machine} />
               </StyledLink>
             )
-          })
+          )
         }
       </MachinesListContainer>
     </>

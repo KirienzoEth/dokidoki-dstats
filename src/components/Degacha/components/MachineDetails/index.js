@@ -8,6 +8,7 @@ import { CartesianGrid, XAxis, YAxis, Tooltip, AreaChart, Area, ResponsiveContai
 import CustomTooltip from '../../../Graph/Tooltip'
 import Box from '../../../Box'
 import { toLocaleString } from '../../../../utils/Number';
+import MachineNftList from './MachineNftList';
 
 const HeaderContainer = styled(Box)`
   font-size: 2em;
@@ -35,7 +36,8 @@ const ContentContainer = styled.div`
   grid-template-areas: 'description price'
   'description createdDate'
   'playTimes amountSpent'
-  'machineSpecificGraph profitAmount';
+  'machineSpecificGraph profitAmount'
+  'nfts nfts';
   grid-gap: 10px;
 `
 
@@ -78,6 +80,15 @@ export default function MachineDetails() {
               amountSpent
               playTimes
             }
+            machineNfts(orderBy: maxAmount, orderDirection: asc) {
+              currentAmount
+              maxAmount
+              nft {
+                id,
+                uri,
+                maxAmount,
+              }
+            }
           }
         }
       `,
@@ -116,6 +127,7 @@ export default function MachineDetails() {
       setMachineData({
         name: machine.title,
         description: machine.description,
+        nfts: machine.machineNfts,
         locked: machine.locked,
         currencyToken: machine.currencyToken.symbol,
         playOncePrice: machine.playOncePrice / (10 ** machine.currencyToken.decimals),
@@ -288,6 +300,7 @@ export default function MachineDetails() {
             </AreaChart>
           </ResponsiveContainer>
         </Box>
+        <MachineNftList style={{ gridArea: "nfts" }} machineNfts={machineData.nfts} />
       </ContentContainer>
     </>
   )
