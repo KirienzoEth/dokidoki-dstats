@@ -148,8 +148,6 @@ export default function MachineDetails() {
     )
   }
 
-  console.log(machineData.dayData)
-
   const price = machineData.locked ? 'Locked' : `${machineData.playOncePrice} ${machineData.currencyToken}`
   const machineSpecificGraph = machineData => {
     if (machineData.currencyToken.toLowerCase() !== 'eth') {

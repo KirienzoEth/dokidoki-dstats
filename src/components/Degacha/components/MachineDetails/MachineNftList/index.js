@@ -58,7 +58,7 @@ export default function MachineNftList({ machineNfts }) {
           Object.keys(nftImages).length === 0 ? loader : nftData.map(machineNft => {
             return (
               <div key={machineNft.id}>
-                <NftHeader>{machineNft.machineCurrentAmount} | {machineNft.machineMaxAmount} | {machineNft.maxAmount}</NftHeader>
+                <NftHeader>{machineNft.machineMaxAmount - machineNft.machineCurrentAmount} | {machineNft.machineCurrentAmount} | {machineNft.maxAmount}</NftHeader>
                 <NftImage alt="nft" src={nftImages[machineNft.id]} />
               </div>
             )
