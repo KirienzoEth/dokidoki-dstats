@@ -1,13 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Fragment = styled.div`
-  margin: 10px auto;
-`
-
 const ProgressBarContainer = styled.div`
   position: relative;
   width: 100%;
+  margin: 10px auto;
   height: 50px;
   border: 1px solid #5225bd;
   border-radius: 10px;
@@ -46,13 +43,13 @@ const ProgressBarProgress = styled.div`
 
 export default function ProgressBar({ progress, content }) {
   return (
-    <Fragment>
+    <>
       <ProgressBarContainer>
         <ProgressBarComplete width={`${progress}%`}>
           <ProgressBarLiquid />
         </ProgressBarComplete>
         <ProgressBarProgress>{content}</ProgressBarProgress>
       </ProgressBarContainer>
-    </Fragment>
+    </>
   )
 }

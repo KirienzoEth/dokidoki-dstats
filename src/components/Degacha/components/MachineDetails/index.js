@@ -114,7 +114,7 @@ export default function MachineDetails() {
           buybackAmount: machineDayData.buybackAmount / (10 ** machine.currencyToken.decimals),
           profitAmount: machineDayData.profitAmount / (10 ** machine.currencyToken.decimals),
           amountSpent: machineDayData.amountSpent / (10 ** machine.currencyToken.decimals),
-          playTimes: machineDayData.playTimes,
+          playTimes: parseInt(machineDayData.playTimes),
 
           cumulativeBurn: cumulativeBurn / (10 ** machine.currencyToken.decimals),
           cumulativeBuyback: cumulativeBuyback / (10 ** machine.currencyToken.decimals),
@@ -136,7 +136,7 @@ export default function MachineDetails() {
         buybackAmount: machine.buybackAmount / (10 ** machine.currencyToken.decimals),
         profitAmount: machine.profitAmount / (10 ** machine.currencyToken.decimals),
         amountSpent: machine.amountSpent / (10 ** machine.currencyToken.decimals),
-        playTimes: machine.playTimes,
+        playTimes: parseInt(machine.playTimes),
         dayData: dayData.reverse(),
       })
     })
@@ -147,6 +147,8 @@ export default function MachineDetails() {
       <p>Loading...</p>
     )
   }
+
+  console.log(machineData.dayData)
 
   const price = machineData.locked ? 'Locked' : `${machineData.playOncePrice} ${machineData.currencyToken}`
   const machineSpecificGraph = machineData => {

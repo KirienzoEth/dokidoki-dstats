@@ -31,8 +31,7 @@ const TokenInfoContainer = styled.span`
 `
 
 const initialTokenData = {
-  name: '',
-  symbol: '',
+  price: 0,
   decimals: 0,
   burnAmount: 0,
   currentSupply: 0,
@@ -73,8 +72,6 @@ export default function Azuki() {
       })
 
       return {
-        name: token.name,
-        symbol: token.symbol,
         decimals: token.decimals,
         burnAmount: token.burnAmount / (10 ** token.decimals),
         currentSupply: token.currentSupply / (10 ** token.decimals),
@@ -122,7 +119,7 @@ export default function Azuki() {
 
       <Box>
         <h2>Farming progress:</h2>
-        <ProgressBar progress={tokenData.currentSupply / 20000000 * 100} content={`${toLocaleString(tokenData.currentSupply)} / ${toLocaleString(20000000)}`} />
+        <ProgressBar progress={(tokenData.currentSupply + tokenData.burnAmount) / 20000000 * 100} content={`${toLocaleString(tokenData.currentSupply + tokenData.burnAmount)} / ${toLocaleString(20000000)}`} />
       </Box>
 
       <ContentContainer>
